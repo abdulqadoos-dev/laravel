@@ -22,14 +22,19 @@ class PersonController extends Controller
     {
         return response()->json([
             'status' => true,
-            'message' => 'Person Created Successfully',
+            'message' => 'Person Retrieved Successfully',
             'persons' => new PersonRescource($this->person->paginate(10))
         ], 200);
     }
 
     public function save(PersonRequest $request)
     {
-        $form_data = $this->person->create($request->all());
+        $form_data = $this->person->create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'file' =>  $request->file('file')->store('persons', 'public'),
+            'type' => $request->type
+        ], 200);
 
         return response()->json([
             'status' => true,
@@ -42,8 +47,8 @@ class PersonController extends Controller
     {
         return response()->json([
             'status' => true,
-            'message' => 'Person Created Successfully',
-            'persons' => new PersonRescource($this->findOrFail->find($id))
+            'message' => 'Person Retrieved Successfully',
+            'persons' => new PersonRescource($this->person->findOrFail($id))
         ], 200);
     }
 
